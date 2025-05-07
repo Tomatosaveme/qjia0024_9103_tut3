@@ -10,7 +10,7 @@ I was inspired by Elias Hanzer’s Phase, which uses modular, generative shapes 
 ![Image of tetirs-3](assets/tetris_0638.jpg)
 
 ## Part 2: Coding Technique Exploration
-I found that using millis() in p5.js is an effective way to control rhythmic modular transformations over time. This function tracks how much time has passed since the program started, allowing me to trigger shape changes or motion at consistent intervals. This timed triggering helps simulate the structured rhythm seen in Phase. It also separates animation from user input, making the system fully time-based. By using millis() to control when events happen, I can build animations that express flow, repetition, and progression in a clean and modular visual language.
+I found that using millis() in p5.js is an effective way to control rhythmic modular transformations over time. This function tracks how much time has passed since the program started, allowing me to trigger shape changes or motion at consistent intervals. It separates animation from user input, making the system fully time-based. By using millis() to control when events happen, I can build animations that express flow, repetition, and progression in a clean and modular visual language.
 
 ![Image of millis()-1](assets/millis()-1.png)
 ![Image of millis()-2](assets/millis()-2.png)
