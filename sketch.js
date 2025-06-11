@@ -58,4 +58,5 @@ function updateAnimations() {
 
 function displayInfo() {
   fill(0);
-} 
+}
+)
