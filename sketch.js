@@ -6,38 +6,73 @@ let squares = [];//store squares that emit from let to right
 let bgColors = ["#FFCCCB", "#D3D3D3", "#ADD8E6", "#FFFF99"];
 let bgColorIndex = 0;
 let lastBgChangeTime = 0;
+let isPlaying = false;
+let sound;
 
+/**
+ *  Preload the music file before the sketch starts.
+ * The preload() function ensures that the audio is fully loaded
+ * before `setup()` and `draw()` are executed.
+ */
 function preload() {
-  try {// Try to execute the loading process; if something goes wrong, catch it in the catch block.
+  try { /**The following lines were taken from ChatGPT.
+     * Attempt to load the audio file using loadSound().
+     * The file path points to a local asset in the 'assets' folder.
+     * loadSound() takes three parameters:
+     * - The file path
+     * - A success callback (executed if loading is successful)
+     * - An error callback (executed if loading fails)
+     */
 
-    sound = loadSound('assets/Chick Corea、Return To Forever - Spain (1) (mp3cut.net).mp3',// Use loadSound() to load an audio file from the specified path.
-      () => {
-        console.log('music load sucess');
-        isMusicLoaded = true;// If the sound loads successfully, log a success message and set isMusicLoaded to true.
-      },
-      (err) => {
-        console.error('music load failed:', err);// If the sound fails to load, log an error message with details.
-      }
-    );
-  } catch (error) {
-    console.error('loading error:', error);// If any error occurs during the loading process (outside of loadSound callbacks), handle it here.
+      sound = loadSound('assets/Chick Corea、Return To Forever - Spain (1) (mp3cut.net).mp3',// Use loadSound() to load an audio file from the specified path.
+        () => {
+          console.log('music load sucess');
+          isMusicLoaded = true;// If the sound loads successfully, log a success message and set isMusicLoaded to true.
+        },// Error callback
+        (err) => {
+          console.error('music load failed:', err);// If the sound fails to load, log an error message with details.
+        }
+      );
+    } catch (error) {
+      console.error('loading error:', error); /**Catch any unexpected errors outside of loadSound callbacks.
+      * This is useful for catching exceptions not related to file access,
+      * such as syntax or execution errors.
+      */
   }
 }
-
+/**
+ * This function runs once at the beginning of the program.
+ * It sets up the canvas and attaches interaction logic for music playback.
+ */
 function setup() {
   createCanvas(windowWidth, windowHeight);
   s = windowWidth / 1920;
 
-   // Get the progress bar element by its ID
+  // Get the progress bar element from the HTML to sync audio progress
   let animationProgress = document.getElementById('animationProgress');
 
-  // Add a click event listener to the document
-  document.addEventListener('click', function() {
-    // If music is loaded and not currently playing, start playing it
+    /**
+   * Attach an event listener to the "Play" button.
+   * If the music is loaded and not already playing, start the music,
+   * lower the volume to a moderate level (0.5), and update the state.
+   */
+  document.getElementById('playButton').addEventListener('click', () => {
     if (isMusicLoaded && !sound.isPlaying()) {
-      console.log('try to play music');
-      sound.play();//play
-      sound.setVolume(0.5);//set volume
+      sound.play();
+      sound.setVolume(0.5);
+      isPlaying = true;
+    }
+  });
+
+  /**
+   *Attach an event listener to the "Pause" button.
+   * If the music is loaded and currently playing, pause the playback
+   * and update the state.
+   */
+  document.getElementById('pauseButton').addEventListener('click', () => {
+    if (isMusicLoaded && sound.isPlaying()) {
+      sound.pause();
+      isPlaying = false;
     }
   });
 
@@ -50,74 +85,127 @@ function setup() {
   });
 }
 
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  s = windowWidth / 1920;
+}
+
 
 
 function draw() {
   background(220);
+  /**
+ * Update the audio progress slider based on current sound time.
+ * This lets the user see how far the music has played in real time.
+ */
+
   // Update the progress bar value in real time
   let animationProgress = document.getElementById('animationProgress');
   // Set the slider value to current time of the sound
   if (isMusicLoaded && sound.isPlaying()) {
     animationProgress.value = sound.currentTime();
   }
+  /**
+ * Emit horizontal squares every 30 frames while the music is playing.
+ * These squares appear from the left and move to the right.
+ */
 
-  if (frameCount % 30 === 0) { // Every 30 frames, emit a square from the left side with a random color
+  if (isMusicLoaded && sound.isPlaying() && frameCount % 30 === 0) {  // Every 30 frames, emit a square from the left side with a random color
     let colors = [color(255, 0, 0), color(255, 255, 0), color(0, 0, 255), color(128, 128, 128)];
     let randomColor = colors[floor(random(colors.length))];
-    squares.push({ x: 0, y: random(height), size: 50, color: randomColor });//the squares starts from the left of the screen(x=0),the information of the squares
+    squares.push({ x: 0, y: random(height), size: 30, color: randomColor });//the squares starts from the left of the screen(x=0),the information of the squares
     //are stored in squares[]
   }
+
+  /**
+ *Animate all horizontal squares and remove them when they go off-screen.
+ */
+
   // Loop through all squares and move them to the right
   for (let i = squares.length - 1; i >= 0; i--) {
-    let sq = squares[i]; //set square
-    fill(sq.color);
-    noStroke();
-    rect(sq.x, sq.y, sq.size, sq.size);//draw square at (x.y)position
+    // Loop through the squares array from the end to the beginning.
+  // This reverse loop helps safely remove items from the array without skipping any.
+    let sq = squares[i]; // // Get the current square object from the array.
+    fill(sq.color);// Set the fill color to the square's specified color.
+    noStroke();// Disable outline stroke so only the filled square is visible.
+    rect(sq.x, sq.y, sq.size, sq.size);// Draw the square at position (x, y) with the specified size.
     sq.x += 5; // Then moves the square 5 pixels to the right (sq.x += 5).
 
     if (sq.x > width) {
       squares.splice(i, 1); // If a square moves off the canvas (x > width), it gets removed from the array.
     }
   }
+  /**
+ * Emit vertical shapes every 60 frames — one rectangle and one square.
+ * These shapes rise from the bottom and simulate another visual rhythm.
+ */
 
   // Every 60 frames, emit one yellow rectangle and one gray square from the bottom
-  if (frameCount % 60 === 0) { // set squares
-    verticalShapes.push({ type: 'rect', x: random(width - 50), y: height, width: 80, height: 40, color: color(255, 255, 0) }); // 黄色长方形
-    verticalShapes.push({ type: 'square', x: random(width - 50), y: height, size: 50, color: color(128, 128, 128) }); // 灰色正方形
+  if (isMusicLoaded && sound.isPlaying() && frameCount % 60 === 0) {// set squares
+    verticalShapes.push({ type: 'rect', x: random(width - 50), y: height, width: 80, height: 40, color: color(255, 255, 0) });
+    verticalShapes.push({ type: 'square', x: random(width - 50), y: height, size: 50, color: color(128, 128, 128) });
   }
+
+  /**
+ * Animate all vertical shapes upward and remove them if they go off-screen.
+ */
   // Loop through all vertical shapes and move them upward
   for (let i = verticalShapes.length - 1; i >= 0; i--) {
-    let shape = verticalShapes[i];
+    // Loop through the verticalShapes array from the last element to the first.
+  // This reverse order allows us to safely remove elements without skipping any.
+    let shape = verticalShapes[i]; // Get the current shape object from the array.
     fill(shape.color);
     noStroke();
     if (shape.type === 'rect') {
+      // If the shape is a rectangle, draw it using its width and height.
       rect(shape.x, shape.y, shape.width, shape.height);
     } else if (shape.type === 'square') {
+       // If the shape is a square, draw it using size for both width and height.
       rect(shape.x, shape.y, shape.size, shape.size);
     }
-    shape.y -= 3; // // move the shape upward,move speed
+    shape.y -= 3;  // Move the shape upward by decreasing its y position by 3 pixels.
 
-    if (shape.y < -100) { //  remove the square if it moves beyond the canvas
+
+    if (shape.y < -100) { // If the shape has moved off the top of the canvas (above -100), remove it.
       verticalShapes.splice(i, 1);
     }
   }
 
+  /**
+ *After 15 seconds of playback, change background color every 1.2 seconds.
+ * This gives the visual design a more dynamic, time-reactive quality.
+ */
+
   // When music is loaded, playing, and has reached 15 seconds
-  if (isMusicLoaded && sound.isPlaying() && sound.currentTime() >= 15) {
-    if (millis() - lastBgChangeTime > 1000) {// If more than 1000 milliseconds (1 second) have passed since the last color change
-      background(bgColors[bgColorIndex]);// Set background to the current color in the array
-      bgColorIndex = (bgColorIndex + 1) % bgColors.length;// Go to next color, loop around using modulo
-      lastBgChangeTime = millis(); // Reset the timer
-    }
+  if (sound.currentTime() >= 15 && millis() - lastBgChangeTime > 1200) {
+    // Check if the music has been playing for at least 15 seconds
+    // and if at least 1200 milliseconds (1.2 seconds) have passed since the last background color change.
+
+    background(bgColors[bgColorIndex]);
+    // Set the background color to the current color in the bgColors array using the current index.
+    bgColorIndex = (bgColorIndex + 1) % bgColors.length;
+    // Move to the next color in the array. Use modulo to loop back to the start when reaching the end.
+    // Update the last background change time to the current time so the next change happens after 1.2 seconds.
+    lastBgChangeTime = millis();
   }
+
+
+ /**
+ * draw: draw the image
+ */
 
 
   // trumpet 1
   push();
+  // Save the current drawing style and transformation settings.
+  // This ensures that any transformations inside this block don't affect the rest of the canvas.
   translate(0, -30 * s);
-  scale(s);
-  drawTrumpet();
-  pop();
+  // Move the origin upwards by 30 times the scale factor `s`.
+  // This positions the trumpet visually on the canvas.
+  scale(s);// Apply a scaling transformation to make the trumpet size responsive to screen width.
+  drawTrumpet();// Call the function to draw the trumpet shape at the translated and scaled position.
+
+  pop();// Restore the previous drawing settings and transformations (undo push/translate/scale).
 
   // trumpet 2
   push();
@@ -160,34 +248,50 @@ function draw() {
   scale(s);
   drawTrumpet4();
   pop();
+  /**
+ *Draw interactive piano keys at the bottom of the screen.
+ * We divide the canvas width into `numKeys` equal parts, and draw
+ * each as a piano key.
+ */
 
   // Piano keys
-  let w = width / numKeys;
-  let pianoY = height * 0.9;
+  let w = width / numKeys; // Width of each key
+  let pianoY = height * 0.9;// Y-position where keys start (near bottom of screen)
   for (let i = 0; i < numKeys; i++) {
-    let x = i * w;
+    let x = i * w; // X-position of the current key
+    /**
+   *Check if the mouse is hovering over this key.
+   * If it is, highlight the key with a different fill color.
+   */
     if (mouseX > x && mouseX < x + w && mouseY > pianoY && mouseY < height) {
-      fill(355, 10, 90);
+      fill(355, 10, 90);  // Use a vibrant pinkish-red color when the key is hovered over.
     } else {
-      fill(255);
+      fill(255); // Use white as the default color when not hovered.
     }
-    stroke(0);
-    strokeWeight(1);
+   /**
+   *Draw the key using a rectangle with a black stroke.
+   * Keys are drawn side by side to form a horizontal piano.
+   */
+    stroke(0);// Set outline color to black.
+    strokeWeight(1);// Set outline thickness to 1 pixel.
     rect(x, pianoY, w - 1, height - pianoY - 1);
+    // Draw the key at (x, pianoY) with calculated width and height.
+    // Subtracting 1 pixel ensures a clear boundary between keys.
   }
-
-
-
 }
 
+
+
+
 function drawTrumpet() {
-  stroke(0);
-  strokeWeight(1);
-  fill(0, 0, 255);beginShape()
-  vertex(0, 111);
-  vertex(65,111);
-  vertex(65, 105);
-  vertex(69, 105);
+  stroke(0); // Set the stroke (outline) color to black
+  strokeWeight(1);// Set the thickness of the outline to 1 pixel.
+  fill(0, 0, 255);// Set the fill color to blue using RGB (Red: 0, Green: 0, Blue: 255).
+  beginShape()// Start defining a custom shape using vertices.
+  vertex(0, 111); // Add the first vertex point at coordinates (0, 111).
+  vertex(65,111); // Add a point at (65, 111), creating a horizontal line segment.
+  vertex(65, 105);// Add a point at (65, 105), forming a vertical line downward.
+  vertex(69, 105);//...
   vertex(69, 88);
   vertex(74, 88);
   vertex(74, 105);
