@@ -1,6 +1,8 @@
 let numKeys = 14; // Number of piano keys
 let s; // scale factor for responsiveness
 let isMusicLoaded = false;// Declare a boolean variable to track whether the music has been successfully loaded.
+let verticalShapes = [];//store squares that emit from bottom to up
+let squares = [];//store squares that emit from let to right
 
 function preload() {
   try {// Try to execute the loading process; if something goes wrong, catch it in the catch block.
@@ -18,6 +20,7 @@ function preload() {
     console.error('loading error:', error);// If any error occurs during the loading process (outside of loadSound callbacks), handle it here.
   }
 }
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   s = windowWidth / 1920;
@@ -32,6 +35,47 @@ function windowResized() {
 
 function draw() {
   background(220);
+
+  if (frameCount % 30 === 0) { // Every 30 frames, emit a square from the left side with a random color
+    let colors = [color(255, 0, 0), color(255, 255, 0), color(0, 0, 255), color(128, 128, 128)];
+    let randomColor = colors[floor(random(colors.length))];
+    squares.push({ x: 0, y: random(height), size: 50, color: randomColor });//the squares starts from the left of the screen(x=0),the information of the squares
+    //are stored in squares[]
+  }
+  // Loop through all squares and move them to the right
+  for (let i = squares.length - 1; i >= 0; i--) {
+    let sq = squares[i]; //set square
+    fill(sq.color);
+    noStroke();
+    rect(sq.x, sq.y, sq.size, sq.size);//draw square at (x.y)position
+    sq.x += 5; // Then moves the square 5 pixels to the right (sq.x += 5).
+
+    if (sq.x > width) {
+      squares.splice(i, 1); // If a square moves off the canvas (x > width), it gets removed from the array.
+    }
+  }
+
+  // Every 60 frames, emit one yellow rectangle and one gray square from the bottom
+  if (frameCount % 60 === 0) { // set squares
+    verticalShapes.push({ type: 'rect', x: random(width - 50), y: height, width: 80, height: 40, color: color(255, 255, 0) }); // 黄色长方形
+    verticalShapes.push({ type: 'square', x: random(width - 50), y: height, size: 50, color: color(128, 128, 128) }); // 灰色正方形
+  }
+  // Loop through all vertical shapes and move them upward
+  for (let i = verticalShapes.length - 1; i >= 0; i--) {
+    let shape = verticalShapes[i];
+    fill(shape.color);
+    noStroke();
+    if (shape.type === 'rect') {
+      rect(shape.x, shape.y, shape.width, shape.height);
+    } else if (shape.type === 'square') {
+      rect(shape.x, shape.y, shape.size, shape.size);
+    }
+    shape.y -= 3; // // move the shape upward,move speed
+
+    if (shape.y < -100) { //  remove the square if it moves beyond the canvas
+      verticalShapes.splice(i, 1);
+    }
+  }
 
 
   // trumpet 1
