@@ -4,18 +4,32 @@ Artwork: Piet Mondrian 'Broadway Boogie Woogie'
 Method:Time-Based:Employ timers and events for animation.
 
 ## How to interact
-1.Click the play button to start the music.
+1.Click the “Play” button to start the background music.
 
-2.Watch for animated squares and shapes moving across the screen.
+2.Click “Pause” to stop the music.
 
-3.Hover your mouse over the piano keys at the bottom – they will highlight interactively.
+3.Drag the progress bar slider to jump to a different time in the music.
 
-4.The background color will begin flashing after 15 seconds to indicate audio progression.
+4.Watch the screen: after 15 seconds, the background begins to change colors every 1.2 seconds.
 
-## Details
+##### Observe animations:
+
+1.Squares move from left to right every 0.5 seconds.
+
+2.Rectangles and squares rise from the bottom every second.
+
+3.Hover over the piano keys at the bottom (14 total). The key turns red when hovered.
+
+## My Individual Approach
 #### Time
-I focused on creating time-synced animations that visually respond to audio progress. Instead of assigning one shape per instrument, I used a trigger-based system where specific time points in the music activate different animations like floating squares or moving shapes.
-### 
+My animation is time-based which also include audio to make the animation more engaged. I focused on synchronizing visual elements with the passage of time during music playback. Instead of using mouse interaction or Perlin noise like some group members, I implemented logic that responds to:
+
+1.music current time,
+
+2.consistent frame intervals (every 30/60 frames),
+
+   time-based background changes after 15 seconds..
+#### What I Animate & How It's Unique
 
 
 ## Part 1: Imaging Technique Inspiration

@@ -132,7 +132,7 @@ function draw() {
   background(bgColor);
   // Apply the background color to the canvas.
 
-  
+
   /**
  * Update the audio progress slider based on current sound time.
  * This lets the user see how far the music has played in real time.
@@ -229,10 +229,10 @@ function draw() {
   }
 
 
- /**
- * draw: draw the image
- */
-
+//drawing the instruments
+//these sections draw the various musical instruments on the canvas.
+//'push()' and 'pop()' are like temporary sketchpads, allowing us to move and scale each instrument without affecting others.
+//'translate()' moves the instrument, and 'scale(s)' makes sure it's the right size for the screen.
 
   // trumpet 1
   push();
@@ -294,18 +294,15 @@ function draw() {
  */
 
   // Piano keys
-  let w = width / numKeys; // Width of each key
-  let pianoY = height * 0.9;// Y-position where keys start (near bottom of screen)
-  for (let i = 0; i < numKeys; i++) {
-    let x = i * w; // X-position of the current key
-    /**
-   *Check if the mouse is hovering over this key.
-   * If it is, highlight the key with a different fill color.
-   */
+  let w = width / numKeys;  //calculates the width of each piano key.
+  let pianoY = height * 0.9;// determines how high up the piano keys are on the screen (90% from the top).
+  for (let i = 0; i < numKeys; i++) {//loops through each piano key.
+    let x = i * w; //figures out the x-position for the current key.
+    //checks if the mouse is hovering over a piano key.
     if (mouseX > x && mouseX < x + w && mouseY > pianoY && mouseY < height) {
-      fill(355, 10, 90);  // Use a vibrant pinkish-red color when the key is hovered over.
+      fill(355, 10, 90);  //if hovering, makes the key a bright, reddish color.
     } else {
-      fill(255); // Use white as the default color when not hovered.
+      fill(255); //otherwise, keeps the key white.
     }
    /**
    *Draw the key using a rectangle with a black stroke.
@@ -313,14 +310,17 @@ function draw() {
    */
     stroke(0);// Set outline color to black.
     strokeWeight(1);// Set outline thickness to 1 pixel.
-    rect(x, pianoY, w - 1, height - pianoY - 1);
-    // Draw the key at (x, pianoY) with calculated width and height.
+    rect(x, pianoY, w - 1, height - pianoY - 1); // Draw the key at (x, pianoY) with calculated width and height.
     // Subtracting 1 pixel ensures a clear boundary between keys.
+
   }
 }
 
-
-
+//instrument drawing functions
+// These functions are like blueprints for drawing each instrument.
+// They use specific coordinates and shapes to create the visual representations.
+// Each `beginShape()` and `endShape(CLOSE)` block defines a polygon (a multi-sided shape).
+// `vertex()` defines a corner point, and `bezierVertex()` creates smooth curves between points.
 
 function drawTrumpet() {
   stroke(0); // Set the stroke (outline) color to black
