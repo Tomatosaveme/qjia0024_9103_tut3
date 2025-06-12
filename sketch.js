@@ -1,7 +1,23 @@
 let numKeys = 14; // Number of piano keys
 let s; // scale factor for responsiveness
+let isMusicLoaded = false;// Declare a boolean variable to track whether the music has been successfully loaded.
 
+function preload() {
+  try {// Try to execute the loading process; if something goes wrong, catch it in the catch block.
 
+    sound = loadSound('assets/Chick Corea、Return To Forever - Spain (1) (mp3cut.net).mp3',// Use loadSound() to load an audio file from the specified path.
+      () => {
+        console.log('music load sucess');
+        isMusicLoaded = true;// If the sound loads successfully, log a success message and set isMusicLoaded to true.
+      },
+      (err) => {
+        console.error('music load failed:', err);// If the sound fails to load, log an error message with details.
+      }
+    );
+  } catch (error) {
+    console.error('loading error:', error);// If any error occurs during the loading process (outside of loadSound callbacks), handle it here.
+  }
+}
 function setup() {
   createCanvas(windowWidth, windowHeight);
   s = windowWidth / 1920;
