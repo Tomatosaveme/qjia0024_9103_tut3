@@ -2,6 +2,22 @@
 Artwork: Piet Mondrian 'Broadway Boogie Woogie'
 
 Method:Time-Based:Employ timers and events for animation.
+
+## How to interact
+1.Click the play button to start the music.
+
+2.Watch for animated squares and shapes moving across the screen.
+
+3.Hover your mouse over the piano keys at the bottom – they will highlight interactively.
+
+4.The background color will begin flashing after 15 seconds to indicate audio progression.
+
+## Details
+#### Time
+I focused on creating time-synced animations that visually respond to audio progress. Instead of assigning one shape per instrument, I used a trigger-based system where specific time points in the music activate different animations like floating squares or moving shapes.
+### 
+
+
 ## Part 1: Imaging Technique Inspiration
 >I was inspired by the frame-by-frame animation in Coraline(2009).The way the characters move in small, deliverate steps reminded me of how shapes fall,rotate and move in Tetris.I want to bring the similar feeling to my project by letting shapes shift,change or move gradually. This kind of movement works well for time-based animation because the changes unfold over time, even without any user interaction—just like in stop-motion films or classic video games.
 ![Image of tetirs-1](assets/Birthday.jpg)

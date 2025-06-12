@@ -4,10 +4,24 @@ let isMusicLoaded = false;// Declare a boolean variable to track whether the mus
 let verticalShapes = [];//store squares that emit from bottom to up
 let squares = [];//store squares that emit from let to right
 let bgColors = ["#FFCCCB", "#D3D3D3", "#ADD8E6", "#FFFF99"];
+// An array of background colors (light pink, light gray, light blue, light yellow).
+// These will be used to cycle the background dynamically during playback.
 let bgColorIndex = 0;
+// Index to track which background color in the array is currently active.
+// Starts at 0 and is incremented over time to switch colors.
 let lastBgChangeTime = 0;
+// A timestamp (from millis()) that stores the last time the background color was changed.
+// Used to control the timing of background transitions (e.g., every 1.2 seconds).
 let isPlaying = false;
+// A boolean flag to track whether the music is currently playing.
+// This can be used to control playback-related actions or animations.
 let sound;
+// A variable to store the loaded sound object (created by loadSound).
+// This object will later be used to play, pause, jump, and check currentTime.
+
+
+
+
 
 /**
  *  Preload the music file before the sketch starts.
@@ -85,15 +99,40 @@ function setup() {
   });
 }
 
-function windowResized() {
+function windowResized() {  // This function is automatically called whenever the browser window is resized.
   resizeCanvas(windowWidth, windowHeight);
+  // Resize the p5.js canvas to match the new width and height of the browser window.
+  // This keeps the canvas responsive and full-screen.
   s = windowWidth / 1920;
+  // Recalculate the scaling factor `s` based on the new window width.
+  // This keeps all visual elements (like instruments) proportionally scaled.
 }
 
 
 
 function draw() {
-  background(220);
+  let t = isMusicLoaded ? sound.currentTime() : 0;
+  // Get the current playback time of the music if it's loaded; otherwise default to 0.
+ // This is used to trigger background color changes after 15 seconds.
+
+  let bgColor = 220; //
+
+  if (t >= 15) {
+    // Once the music playback reaches 15 seconds or more, start changing the background.
+    if (millis() - lastBgChangeTime > 1500) {
+      // If more than 1.5 seconds have passed since the last color change...
+
+      bgColorIndex = (bgColorIndex + 1) % bgColors.length;
+      // Move to the next color in the list; loop back to the start when reaching the end.
+      lastBgChangeTime = millis();// Update the timestamp of the last color change to the current time.
+    }
+    bgColor = bgColors[bgColorIndex];// Set the current background color based on the selected index.
+  }
+
+  background(bgColor);
+  // Apply the background color to the canvas.
+
+  
   /**
  * Update the audio progress slider based on current sound time.
  * This lets the user see how far the music has played in real time.
@@ -123,9 +162,9 @@ function draw() {
 
   // Loop through all squares and move them to the right
   for (let i = squares.length - 1; i >= 0; i--) {
-    // Loop through the squares array from the end to the beginning.
+  // Loop through the squares array from the end to the beginning.
   // This reverse loop helps safely remove items from the array without skipping any.
-    let sq = squares[i]; // // Get the current square object from the array.
+    let sq = squares[i]; // Get the current square object from the array.
     fill(sq.color);// Set the fill color to the square's specified color.
     noStroke();// Disable outline stroke so only the filled square is visible.
     rect(sq.x, sq.y, sq.size, sq.size);// Draw the square at position (x, y) with the specified size.
