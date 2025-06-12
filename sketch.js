@@ -3,6 +3,9 @@ let s; // scale factor for responsiveness
 let isMusicLoaded = false;// Declare a boolean variable to track whether the music has been successfully loaded.
 let verticalShapes = [];//store squares that emit from bottom to up
 let squares = [];//store squares that emit from let to right
+let bgColors = ["#FFCCCB", "#D3D3D3", "#ADD8E6", "#FFFF99"];
+let bgColorIndex = 0;
+let lastBgChangeTime = 0;
 
 function preload() {
   try {// Try to execute the loading process; if something goes wrong, catch it in the catch block.
@@ -24,17 +27,39 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
   s = windowWidth / 1920;
-}
 
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-  s = windowWidth / 1920;
+   // Get the progress bar element by its ID
+  let animationProgress = document.getElementById('animationProgress');
+
+  // Add a click event listener to the document
+  document.addEventListener('click', function() {
+    // If music is loaded and not currently playing, start playing it
+    if (isMusicLoaded && !sound.isPlaying()) {
+      console.log('try to play music');
+      sound.play();//play
+      sound.setVolume(0.5);//set volume
+    }
+  });
+
+  // Add an event listener to the progress bar to handle user input
+  animationProgress.addEventListener('input', () => {
+    // If music is loaded, jump to the selected time in the track
+    if (isMusicLoaded) {
+      sound.jump(animationProgress.value);
+    }
+  });
 }
 
 
 
 function draw() {
   background(220);
+  // Update the progress bar value in real time
+  let animationProgress = document.getElementById('animationProgress');
+  // Set the slider value to current time of the sound
+  if (isMusicLoaded && sound.isPlaying()) {
+    animationProgress.value = sound.currentTime();
+  }
 
   if (frameCount % 30 === 0) { // Every 30 frames, emit a square from the left side with a random color
     let colors = [color(255, 0, 0), color(255, 255, 0), color(0, 0, 255), color(128, 128, 128)];
@@ -74,6 +99,15 @@ function draw() {
 
     if (shape.y < -100) { //  remove the square if it moves beyond the canvas
       verticalShapes.splice(i, 1);
+    }
+  }
+
+  // When music is loaded, playing, and has reached 15 seconds
+  if (isMusicLoaded && sound.isPlaying() && sound.currentTime() >= 15) {
+    if (millis() - lastBgChangeTime > 1000) {// If more than 1000 milliseconds (1 second) have passed since the last color change
+      background(bgColors[bgColorIndex]);// Set background to the current color in the array
+      bgColorIndex = (bgColorIndex + 1) % bgColors.length;// Go to next color, loop around using modulo
+      lastBgChangeTime = millis(); // Reset the timer
     }
   }
 
