@@ -29,7 +29,7 @@ let sound;
  * before `setup()` and `draw()` are executed.
  */
 function preload() {
-  try { /**The following lines were taken from ChatGPT.
+  try { /**
      * Attempt to load the audio file using loadSound().
      * The file path points to a local asset in the 'assets' folder.
      * loadSound() takes three parameters:
@@ -37,12 +37,19 @@ function preload() {
      * - A success callback (executed if loading is successful)
      * - An error callback (executed if loading fails)
      */
-
+      // sound=loadSound() were checked by chatgpt
       sound = loadSound('assets/Chick Corea、Return To Forever - Spain (1) (mp3cut.net).mp3',// Use loadSound() to load an audio file from the specified path.
         () => {
           console.log('music load sucess');
           isMusicLoaded = true;// If the sound loads successfully, log a success message and set isMusicLoaded to true.
-        },// Error callback
+        const animationProgress = document.getElementById('animationProgress');// Get the slider element from the HTML with the ID 'animationProgress'
+        if (animationProgress) {// Check if the slider element exists before trying to use it
+          // Set the maximum value of the slider to the total duration of the sound
+          // This ensures the slider's range correctly matches the length of the music (in seconds)
+          animationProgress.max = sound.duration();
+        }
+      },
+        // Error callback
         (err) => {
           console.error('music load failed:', err);// If the sound fails to load, log an error message with details.
         }
