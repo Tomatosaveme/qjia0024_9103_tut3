@@ -36,12 +36,23 @@ Viewers can freely adjust the music's playback position by dragging the progress
 
 When the music reaches the 15-second mark, the background begins to shift through a series of soft pastel tones (light pink, light gray, light blue, light yellow), changing every 1.2 seconds. This rhythmic background transition corresponds with the clapping beats in the music, offering a synchronized audio-visual experience.  In contrast to my teammates, who explored randomized Perlin noise and generative square animations, my work focuses on precisely synchronizing visual elements with the timing of the music and allows user to control the process of animation.
 
+Compared to my group members:
+- I implemented real-time **audio scrubbing** via a progress bar.
+- I created **horizontal and vertical motion** patterns with distinct visual rhythms.
+- I applied **dynamic background color changes** tied to music timing (after 15s).
+- I reused group instrument visuals but focused my additions on animation and interaction logic.
+
 ## Part 1: Imaging Technique Inspiration
 >My inspiration came from Fractured Heart, an interactive light sculpture created by Gotye and ENESS. This artwork uses rhythmic lighting changes to respond to music, creating a highly dynamic visual experience. I was deeply drawn to the strong sense of audiovisual synchronization it presented. In my own project, I aimed to bring this rhythmic quality into the visual design by using periodic background color transitions that align with the beat of the music, creating a similar sense of rhythm and immersive atmosphere.
 ![Image of heart sculpture](assets/Fractured_Heart_in_action.jpg)
 
 ### Technique I use for the coding
->#### Audio
+#### Change from group
+  - Play/Pause buttons and slider for audio control
+  - Time-driven square/rectangle animation
+  - Dynamic background transitions
+  - Responsive canvas behavior
+#### Audio
 
 loadSound(path, successCallback, errorCallback)
 Loads the audio file from the specified path. You used this with error handling to ensure the music loads properly.
@@ -147,10 +158,10 @@ Accessing specific items in arrays like squares, bgColors, verticalShapes.
 https://editor.p5js.org/MatthewBoden/sketches/xizLvGl-7
 
 
-## Technique Explaination
-In my individual version of the code, I improved the preload() and setup() sections to support better audio control and feedback. Instead of using a basic loadSound() call like the group version, I implemented a callback-based structure that confirms whether the music has loaded successfully (isMusicLoaded = true), logs relevant messages, and updates the HTML progress slider (#animationProgress) to reflect the track's actual duration using sound.duration(). This approach improves reliability, user awareness, and ties the visual interface to the actual media state.
+## Technique Explain
+In my individual version of the code, I improved the preload() and setup() sections to support better audio control and feedback. Instead of using a basic loadSound() call like the group version, I implemented a callback-based structure that confirms whether the music has loaded successfully (isMusicLoaded = true), logs relevant messages, and updates the HTML progress slider (#animationProgress) to reflect the track’s actual duration using sound.duration().
 
-Additionally, I added interactive audio playback controls using getElementById() and addEventListener() for Play, Pause, and progress bar elements. Users can now start or pause playback with buttons, and even scrub to specific moments in the track using sound.jump(), enabling precise navigation. This is particularly useful when testing the time-based animations. These enhancements not only improve UI/UX but also allow smoother synchronization between visuals and music. Techniques were referenced from the https://p5js.org/search/?term=sound,https://p5js.org/reference/p5/millis/ and the community discussion - https://stackoverflow.com/questions/57722674/p5-js-not-loading-sound
+I also added interactive audio playback controls using getElementById() and addEventListener() for Play, Pause, and the progress bar. Users can scrub through the track using sound.jump() and control playback via sound.play() and sound.pause(). The current time of the track (sound.currentTime()) is used to trigger background color transitions after 15 seconds. I used millis() to create a timed color cycle every 1.2 seconds and frameCount % 30/60 logic to emit horizontal and vertical shapes in rhythm with the music.
 
 ## AI ACKNOWLEDGEMENT
 A part of code was asked Chatgpt to help me check the problem and improve
